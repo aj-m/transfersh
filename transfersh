@@ -23,6 +23,7 @@ import requests
 import glob
 import os
 import tarfile
+from clint.textui import progress
 
 parser = argparse.ArgumentParser()
 parser.add_argument("file", help="Path to the file or directory to upload")
@@ -67,9 +68,13 @@ def upload(file, recursive=False):
         filename = str(filename[-1])
     if not args.dryrun:
         with open(file, 'rb', buffering=0) as fh:
-            response = requests.request('PUT','https://{0}/{1}{2}'.format(upload_servername,filename,params),
-                                    data=fh,
-                                    )
+            response = requests.request('PUT',
+                'https://{0}/{1}{2}'.format(upload_servername,filename,params),
+                stream=True,
+                data=fh,)
+#            total_length = int(response.headers.get('content-length'))
+#            progress.bar(response.iter_content(chunk_size=1024),
+#                expected_size=(total_length/1024)+1)
         if recursive:
             print('File ' + file + ' saved at: ' + response.text)
         else:
