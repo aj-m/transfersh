@@ -67,7 +67,7 @@ def upload(file, recursive=False):
         filename = str(filename[-1])
     if not args.dryrun:
         with open(file, 'rb', buffering=0) as fh:
-            response = requests.put('https://' + upload_servername + '/' + filename + params,
+            response = requests.put('https://{0}/{1}{2}'.format(upload_servername,filename,params),
                                     data=fh,
                                     )
         if recursive:
